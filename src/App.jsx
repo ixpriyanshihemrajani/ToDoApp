@@ -28,9 +28,15 @@ const TodoApp = () => {
   
   const fetchTodos = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/todos"
+        "https://jsonplaceholder.typicode.com/todos",
+        {
+          params: {
+            _limit: todosPerPage,
+            _page: currentPage
+          }
+        }
       );
       if (response.status === 200) {
         setTodos(response.data);
@@ -40,13 +46,14 @@ const TodoApp = () => {
     } catch (error) {
       console.error("Error fetching todos:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
+  
 
-  const indexOfLastTodo = currentPage * todosPerPage;
-  const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-  const currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  // const indexOfLastTodo = currentPage * todosPerPage;
+  // const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+  // const currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -109,33 +116,33 @@ const TodoApp = () => {
         </button>
       </div>
       <div className="todo-container">
-        {loading ? ( 
-          <>
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-          </>
-        ) : (
-          currentTodos.map((todo) => (
-            <div
-              key={todo.id}
-              className={`todo-card ${
-                todo.completed ? "completed" : "incomplete"
-              }`}
-            >
-              <h2>{todo.title}</h2>
-              <p className="status">
-                Status: {todo.completed ? "Completed" : "Incomplete"}
-              </p>
-              <div className="todo-actions">
-                <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-                <button onClick={() => openEditModal(todo)}>Edit</button>
-              </div>
-            </div>
-          ))
-        )}
+      {loading ? ( 
+      <>
+      <Skeleton active />
+      <Skeleton active />
+      <Skeleton active />
+      <Skeleton active />
+      <Skeleton active />
+    </>
+    ) : (
+      todos.map((todo) => (
+      <div
+        key={todo.id}
+        className={`todo-card ${
+          todo.completed ? "completed" : "incomplete"
+        }`}
+      >
+        <h2>{todo.title}</h2>
+        <p className="status">
+          Status: {todo.completed ? "Completed" : "Incomplete"}
+        </p>
+        <div className="todo-actions">
+          <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+          <button onClick={() => openEditModal(todo)}>Edit</button>
+        </div>
+      </div>
+    ))
+  )}
       </div>
       <div className="pagination">
         <Pagination
