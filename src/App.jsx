@@ -13,7 +13,7 @@ const TodoApp = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState(null);
   const [updatedTodoTitle, setUpdatedTodoTitle] = useState("");
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     fetchTodos();
@@ -28,12 +28,19 @@ const TodoApp = () => {
 
   const fetchTodos = async () => {
     try {
+      setLoading(true); 
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/todos"
       );
-      setTodos(response.data);
+      if (response.status === 200) {
+        setTodos(response.data);
+      } else {
+        console.error("Error fetching todos: Unexpected status code");
+      }
     } catch (error) {
       console.error("Error fetching todos:", error);
+    } finally {
+      // setLoading(false); 
     }
   };
 
@@ -45,21 +52,21 @@ const TodoApp = () => {
     setCurrentPage(pageNumber);
   };
 
-  const addTodo = async () => {
-    try {
-      const response = await axios.post(
-        "https://jsonplaceholder.typicode.com/todos",
-        {
-          title: newTodoTitle,
-          completed: false,
-        }
-      );
-      setTodos([...todos, response.data]);
-      setIsModalVisible(false);
-      setNewTodoTitle("");
-    } catch (error) {
-      console.error("Error adding todo:", error);
+  const addTodo = () => {
+    if (newTodoTitle.trim() === "") {
+      return; 
     }
+  
+    const newTodo = {
+      id: todos.length + 1, 
+      title: newTodoTitle,
+      completed: false,
+    };
+  
+    const updatedTodos = [...todos, newTodo]; 
+    setTodos(updatedTodos); 
+    setIsModalVisible(false);
+    setNewTodoTitle("");
   };
 
   const deleteTodo = async (id) => {
@@ -102,7 +109,7 @@ const TodoApp = () => {
         </button>
       </div>
       <div className="todo-container">
-        {loading ? ( // Show skeleton loader while loading
+        {loading ? ( 
           <>
             <Skeleton active />
             <Skeleton active />
