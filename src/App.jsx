@@ -25,7 +25,7 @@ const TodoApp = () => {
     }, 3000); 
     return () => clearTimeout(timer);
   }, []);
-
+  
   const fetchTodos = async () => {
     try {
       setLoading(true); 
@@ -40,7 +40,7 @@ const TodoApp = () => {
     } catch (error) {
       console.error("Error fetching todos:", error);
     } finally {
-      // setLoading(false); 
+      setLoading(false); 
     }
   };
 
