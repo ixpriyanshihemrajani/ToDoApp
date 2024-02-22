@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Pagination, Modal, Input, Button, Skeleton } from "antd";
+import { Pagination, Modal, Input, Button, Skeleton, Spin } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 import "./App.css";
 
@@ -19,13 +19,7 @@ const TodoApp = () => {
     fetchTodos();
   }, [currentPage, todosPerPage]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000); 
-    return () => clearTimeout(timer);
-  }, []);
-  
+
   const fetchTodos = async () => {
     try {
       setLoading(true);
@@ -60,6 +54,7 @@ const TodoApp = () => {
   };
 
   const addTodo = () => {
+    setLoading(true);
     if (newTodoTitle.trim() === "") {
       return; 
     }
@@ -74,19 +69,24 @@ const TodoApp = () => {
     setTodos(updatedTodos); 
     setIsModalVisible(false);
     setNewTodoTitle("");
+    setLoading(false);
   };
 
   const deleteTodo = async (id) => {
     try {
+      setLoading(true);
       await axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`);
       setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("Error deleting todo:", error);
+    }finally {
+      setLoading(false); 
     }
   };
 
   const updateTodo = async (id, updatedTitle) => {
     try {
+      setLoading(true);
       await axios.put(`https://jsonplaceholder.typicode.com/todos/${id}`, {
         title: updatedTitle,
       });
@@ -98,6 +98,8 @@ const TodoApp = () => {
       setEditModalVisible(false);
     } catch (error) {
       console.error("Error updating todo:", error);
+    }finally {
+      setLoading(false); 
     }
   };
 
