@@ -86,6 +86,7 @@ const TodoApp = () => {
 
   const updateTodo = async (id, updatedTitle) => {
     try {
+      setEditModalVisible(false)
       setLoading(true);
       await axios.put(`https://jsonplaceholder.typicode.com/todos/${id}`, {
         title: updatedTitle,
