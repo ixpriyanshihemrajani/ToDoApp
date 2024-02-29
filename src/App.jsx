@@ -21,7 +21,7 @@ const TodoApp = () => {
   const Fetch = import.meta.env.VITE_FETCH;
   const Update = import.meta.env.VITE_UPDATE;
   const Add = import.meta.env.VITE_ADD;
-  const baseurl="https://jsonplaceholder.typicode.com/todos"
+  
 
   useEffect(() => {
     fetchTodos();
@@ -31,7 +31,7 @@ const TodoApp = () => {
   const fetchTodos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(baseurl, {
+      const response = await axios.get(`${Fetch}`, {
         params: {
           _limit: todosPerPage,
           _page: currentPage
